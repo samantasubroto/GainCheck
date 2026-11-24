@@ -1,0 +1,3 @@
+streamlit        # the web UI
+requests         # calls the backend API
+python-dotenv    # reads BACKEND_URL from .env

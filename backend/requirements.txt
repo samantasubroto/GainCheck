@@ -1,0 +1,25 @@
+# Web framework
+fastapi             # the API itself
+uvicorn[standard]   # server that runs FastAPI
+
+# Settings and data validation
+pydantic-settings   # reads .env into a Python settings object
+email-validator     # lets Pydantic validate email fields
+
+# Database
+sqlalchemy          # talk to SQLite with Python classes
+alembic             # database migrations
+
+# Auth (Firebase)
+firebase-admin      # verify and revoke tokens on the server
+requests            # call the Firebase REST API (signup, login, refresh)
+
+# LLM
+langchain-core      # common interface for chat models
+langchain-ollama    # local models through Ollama
+langchain-openai    # OpenAI models
+langsmith           # tracing and evals
+
+# Testing
+pytest
+httpx               # needed by FastAPI's TestClient
