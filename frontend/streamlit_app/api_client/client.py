@@ -42,9 +42,12 @@ def _error_message(response):
     if isinstance(detail, str):
         return FRIENDLY_MESSAGES.get(detail, "Something went wrong: " + detail)
 
-    # Our input rules were not met (status 422): detail is a list.
-    if response.status_code == 422:
-        return "Please enter a valid email and a password with at least 6 characters."
+    # Our input rules were not met (status 422): detail is a list of problems.
+    # Each problem looks like {"loc": ["body", "password"], "msg": "String should ..."}.
+    if response.status_code == 422 and isinstance(detail, list) and detail:
+        first = detail[0]
+        field = str(first.get("loc", ["input"])[-1])
+        return "Please check your input. " + field + ": " + str(first.get("msg", "not valid"))
 
     return "Something went wrong. Please try again."
 
@@ -94,3 +97,15 @@ def get_profile(id_token):
 
 def update_profile(id_token, data):
     return _call("PUT", "/me", json=data, token=id_token)
+
+
+def get_exercises(id_token):
+    return _call("GET", "/exercises", token=id_token)
+
+
+def create_workout(id_token, data):
+    return _call("POST", "/workouts", json=data, token=id_token)
+
+
+def get_workouts(id_token):
+    return _call("GET", "/workouts", token=id_token)
