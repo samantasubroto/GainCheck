@@ -5,6 +5,21 @@ from session import auth_state
 
 st.set_page_config(page_title="GainCheck", page_icon="💪")
 
+PROFILE_PAGE = "pages/5_Profile.py"
+
+
+def go_after_login():
+    """Decide where to send the user right after they log in or sign up."""
+    try:
+        profile = auth_state.call_with_token(client.get_profile)
+    except client.ApiError:
+        profile = {}  # We could not load it, so treat it as not filled in.
+
+    if auth_state.profile_is_complete(profile):
+        st.rerun()  # run the script again, now it will show the home page
+    else:
+        st.switch_page(PROFILE_PAGE)
+
 
 def show_login_form():
     with st.form("login_form"):
@@ -23,7 +38,7 @@ def show_login_form():
             return
 
         auth_state.save_login(tokens, email)
-        st.rerun()  # run the script again, now it will show the home page
+        go_after_login()
 
 
 def show_signup_form():
@@ -46,9 +61,9 @@ def show_signup_form():
             st.error(str(error))
             return
 
-        # A new account is logged in right away.
+        # A new account is logged in right away, and a new user has no profile yet.
         auth_state.save_login(tokens, email)
-        st.rerun()
+        go_after_login()
 
 
 def show_login_page():
@@ -65,11 +80,18 @@ def show_login_page():
 def show_home_page():
     st.title("💪 GainCheck")
     st.success("You are logged in as " + st.session_state["email"])
-    st.write("Welcome! Workouts, body metrics, progress and reports are coming soon.")
+    auth_state.show_logout_button()
 
-    if st.sidebar.button("Log out"):
-        auth_state.logout()
-        st.rerun()
+    # Remind the user if they skipped the profile.
+    try:
+        profile = auth_state.call_with_token(client.get_profile)
+    except client.ApiError:
+        profile = {}
+    if not auth_state.profile_is_complete(profile):
+        st.warning("Your profile is not complete yet.")
+        st.page_link(PROFILE_PAGE, label="Complete your profile")
+
+    st.write("Welcome! Workouts, body metrics, progress and reports are coming soon.")
 
 
 # The login gate: logged-in users see the home page, everyone else sees login.

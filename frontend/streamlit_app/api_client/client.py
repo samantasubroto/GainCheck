@@ -80,5 +80,17 @@ def login(email, password):
     return _call("POST", "/auth/login", json={"email": email, "password": password})
 
 
+def refresh(refresh_token):
+    return _call("POST", "/auth/refresh", json={"refresh_token": refresh_token})
+
+
 def logout(id_token):
     return _call("POST", "/auth/logout", token=id_token)
+
+
+def get_profile(id_token):
+    return _call("GET", "/me", token=id_token)
+
+
+def update_profile(id_token, data):
+    return _call("PUT", "/me", json=data, token=id_token)

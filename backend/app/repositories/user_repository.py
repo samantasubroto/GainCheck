@@ -16,6 +16,15 @@ def create(db, uid, email):
     return user
 
 
+def update(db, user, data):
+    """Save new values on a user. data is a dictionary like {"sex": "male", ...}."""
+    for field, value in data.items():
+        setattr(user, field, value)
+    db.commit()
+    db.refresh(user)
+    return user
+
+
 def get_or_create(db, uid, email):
     """Return the user, and create the row first if this is their first time."""
     user = get_by_uid(db, uid)
