@@ -5,6 +5,9 @@ from session import auth_state
 
 st.set_page_config(page_title="GainCheck", page_icon="💪")
 
+# After a browser refresh this logs the user back in from the cookie.
+auth_state.init()
+
 PROFILE_PAGE = "pages/5_Profile.py"
 
 
