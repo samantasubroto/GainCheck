@@ -111,6 +111,10 @@ def get_workouts(id_token):
     return _call("GET", "/workouts", token=id_token)
 
 
+def get_progress(id_token, days):
+    return _call("GET", "/progress?days=" + str(days), token=id_token)
+
+
 def save_body_metric(id_token, data):
     return _call("POST", "/body-metrics", json=data, token=id_token)
 
