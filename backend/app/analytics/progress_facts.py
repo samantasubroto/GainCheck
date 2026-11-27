@@ -8,7 +8,7 @@ A set is a dictionary like {"date": datetime.date(2026, 3, 2), "weight_kg": 100.
 
 import datetime
 
-from app.analytics import one_rm, prs
+from app.analytics import confirmation, one_rm, prs
 
 
 def monthly_best_one_rm(sets):
@@ -76,6 +76,8 @@ def lift_facts(exercise_name, sets, period_start, period_end):
             "volume_pr": _round_record(records["volume_pr"]),
             "rep_prs": records["rep_prs"],
         },
+        "confirmation": confirmation.classify(sets, period_start, period_end),
+        "plateau_weeks": confirmation.plateau_weeks(sets, period_end),
         "monthly_one_rm": monthly_best_one_rm(sets),
     }
 

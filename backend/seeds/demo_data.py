@@ -179,7 +179,7 @@ def build_demo_data(today):
                 for name in names:
                     factor = day_factor
                     # One great day on the deadlift, which does not repeat.
-                    if name == "Deadlift" and month >= 21 and not spike_done:
+                    if name == "Deadlift" and month >= 22.5 and not spike_done:
                         factor = 1.10
                         spike_done = True
                         notes = "Felt unreal today. Everything moved fast."

@@ -94,18 +94,51 @@ def records_text(prs):
 for lift in lifts:
     st.markdown("### " + lift["exercise"])
 
+    check = lift["confirmation"]
+
+    # The verdict first, in plain words.
+    if check["status"] == "confirmed_gain":
+        st.success(
+            f"Confirmed gain. The level you can repeat went from {check['level_before']:g} kg "
+            f"to {check['level_now']:g} kg ({check['level_change_percent']:+.1f}%)."
+        )
+    elif check["status"] == "spike":
+        st.warning(
+            f"One-day spike. Your best session ({check['peak']:g} kg on {check['peak_date']}) is well above "
+            f"the level you repeated ({check['level_now']:g} kg). It is not counted as a real gain yet."
+        )
+    elif check["status"] == "regressing":
+        st.error(
+            f"Going backwards. The level you can repeat dropped from {check['level_before']:g} kg "
+            f"to {check['level_now']:g} kg ({check['level_change_percent']:+.1f}%)."
+        )
+    elif check["status"] == "plateau":
+        st.info("Plateau. No real change in the level you can repeat compared with the period before.")
+    else:
+        st.caption(
+            "Not enough sessions to judge this lift (needs at least 3 in this period and 3 in the one before). "
+            "You did " + str(check["sessions_now"]) + " now and " + str(check["sessions_before"]) + " before."
+        )
+
+    if lift["plateau_weeks"] is not None and lift["plateau_weeks"] >= 4:
+        st.caption("No real gain for " + str(lift["plateau_weeks"]) + " weeks.")
+
     left, middle, right = st.columns(3)
-    if lift["one_rm_now"] is None:
-        left.metric("Estimated 1RM", "-")
+    if check["level_now"] is None:
+        left.metric("Repeatable 1RM", "-")
         left.caption("No usable sets in this period.")
     else:
         delta = None
-        if lift["change_kg"] is not None:
-            delta = f"{lift['change_kg']:+.1f} kg ({lift['change_percent']:+.1f}%)"
-        left.metric("Estimated 1RM", f"{lift['one_rm_now']:g} kg", delta=delta)
-    middle.metric("Sessions", lift["sessions_in_period"])
-    if lift["all_time_best_one_rm"] is not None:
-        right.metric("Best ever", f"{lift['all_time_best_one_rm']:g} kg")
+        if check["level_change_percent"] is not None:
+            delta = f"{check['level_change_percent']:+.1f}%"
+        left.metric("Repeatable 1RM", f"{check['level_now']:g} kg", delta=delta)
+    if check["peak"] is not None:
+        middle.metric("Best single session", f"{check['peak']:g} kg")
+    right.metric("Sessions", lift["sessions_in_period"])
+    st.caption(
+        "Repeatable 1RM is your second-best session in the period, so one lucky day cannot raise it. "
+        "It is an estimate worked out from your sets."
+    )
 
     lines = records_text(lift["prs"])
     if lines:

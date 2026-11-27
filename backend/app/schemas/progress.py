@@ -27,6 +27,19 @@ class LiftRecords(BaseModel):
     rep_prs: List[RepRecord] = []
 
 
+class ConfirmationOut(BaseModel):
+    # confirmed_gain, spike, plateau, regressing or insufficient_data
+    status: str
+    peak: Optional[float] = None
+    peak_date: Optional[datetime.date] = None
+    level_now: Optional[float] = None
+    level_before: Optional[float] = None
+    level_change_percent: Optional[float] = None
+    spike: bool
+    sessions_now: int
+    sessions_before: int
+
+
 class LiftProgress(BaseModel):
     exercise: str
     sessions_in_period: int
@@ -36,6 +49,8 @@ class LiftProgress(BaseModel):
     change_kg: Optional[float] = None
     change_percent: Optional[float] = None
     prs: LiftRecords
+    confirmation: ConfirmationOut
+    plateau_weeks: Optional[int] = None
     monthly_one_rm: List[MonthPoint]
 
 
