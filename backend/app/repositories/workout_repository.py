@@ -3,7 +3,32 @@
 Every query is filtered by user_id, so one user can never read another user's workouts.
 """
 
+from app.db.models.exercise import Exercise
 from app.db.models.workout import WorkoutSession, WorkoutSet
+
+
+def get_sets_for_user(db, user_id, exercise_names):
+    """Every set this user did for the given exercises, as plain dictionaries.
+
+    Each one looks like {"date": ..., "exercise_name": "Bench Press", "weight_kg": 80.0, "reps": 5}.
+    """
+    rows = (
+        db.query(WorkoutSession.date, Exercise.name, WorkoutSet.weight_kg, WorkoutSet.reps)
+        .join(WorkoutSet, WorkoutSet.session_id == WorkoutSession.id)
+        .join(Exercise, Exercise.id == WorkoutSet.exercise_id)
+        .filter(WorkoutSession.user_id == user_id, Exercise.name.in_(exercise_names))
+        .all()
+    )
+    return [
+        {"date": row[0], "exercise_name": row[1], "weight_kg": row[2], "reps": row[3]}
+        for row in rows
+    ]
+
+
+def get_workout_dates(db, user_id):
+    """The date of every workout this user has done."""
+    rows = db.query(WorkoutSession.date).filter(WorkoutSession.user_id == user_id).all()
+    return [row[0] for row in rows]
 
 
 def create(db, user_id, date, notes, sets_data):
