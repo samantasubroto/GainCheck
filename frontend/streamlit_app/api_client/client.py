@@ -109,3 +109,11 @@ def create_workout(id_token, data):
 
 def get_workouts(id_token):
     return _call("GET", "/workouts", token=id_token)
+
+
+def save_body_metric(id_token, data):
+    return _call("POST", "/body-metrics", json=data, token=id_token)
+
+
+def get_body_metrics(id_token):
+    return _call("GET", "/body-metrics", token=id_token)
