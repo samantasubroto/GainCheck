@@ -4,3 +4,4 @@ from app.db.models.user import User  # noqa: F401
 from app.db.models.exercise import Exercise  # noqa: F401
 from app.db.models.workout import WorkoutSession, WorkoutSet  # noqa: F401
 from app.db.models.body_metric import BodyMetric  # noqa: F401
+from app.db.models.report import Report  # noqa: F401

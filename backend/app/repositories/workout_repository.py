@@ -25,6 +25,23 @@ def get_sets_for_user(db, user_id, exercise_names):
     ]
 
 
+def get_notes_in_period(db, user_id, period_start, period_end):
+    """The notes this user wrote on their workouts in a period, as {"date": ..., "text": ...}."""
+    rows = (
+        db.query(WorkoutSession.date, WorkoutSession.notes)
+        .filter(
+            WorkoutSession.user_id == user_id,
+            WorkoutSession.date >= period_start,
+            WorkoutSession.date <= period_end,
+            WorkoutSession.notes.isnot(None),
+            WorkoutSession.notes != "",
+        )
+        .order_by(WorkoutSession.date)
+        .all()
+    )
+    return [{"date": row[0], "text": row[1]} for row in rows]
+
+
 def get_workout_dates(db, user_id):
     """The date of every workout this user has done."""
     rows = db.query(WorkoutSession.date).filter(WorkoutSession.user_id == user_id).all()

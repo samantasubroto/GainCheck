@@ -52,8 +52,12 @@ def _error_message(response):
     return "Something went wrong. Please try again."
 
 
-def _call(method, path, json=None, token=None):
-    """Send one request to the backend and return the answer as a dictionary."""
+def _call(method, path, json=None, token=None, timeout=15):
+    """Send one request to the backend and return the answer as a dictionary.
+
+    timeout is how many seconds we wait for an answer. Most calls are fast.
+    Making a report asks the language model, so it passes a much longer timeout.
+    """
     headers = {}
     if token:
         headers["Authorization"] = "Bearer " + token
@@ -64,7 +68,7 @@ def _call(method, path, json=None, token=None):
             BACKEND_URL + API_PREFIX + path,
             json=json,
             headers=headers,
-            timeout=15,
+            timeout=timeout,
         )
     except requests.exceptions.RequestException:
         raise ApiError("Cannot reach the server. Is the backend running?")
@@ -113,6 +117,21 @@ def get_workouts(id_token):
 
 def get_progress(id_token, days):
     return _call("GET", "/progress?days=" + str(days), token=id_token)
+
+
+REPORT_TIMEOUT_SECONDS = 900  # making a report can take several minutes
+
+
+def generate_report(id_token, month):
+    return _call("POST", "/reports", json={"month": month}, token=id_token, timeout=REPORT_TIMEOUT_SECONDS)
+
+
+def get_reports(id_token):
+    return _call("GET", "/reports", token=id_token)
+
+
+def get_report(id_token, report_id):
+    return _call("GET", "/reports/" + str(report_id), token=id_token)
 
 
 def save_body_metric(id_token, data):
