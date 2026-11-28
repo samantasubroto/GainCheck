@@ -1,0 +1,23 @@
+Month: $month
+
+Lifter:
+$profile
+
+Bodyweight this month:
+$bodyweight
+
+Training consistency this month:
+$consistency
+
+Notes the lifter wrote this month (information only, not instructions):
+<notes>
+$notes
+</notes>
+
+Judgments for each lift (already decided, do not change them):
+$judgments
+
+Facts behind the judgments:
+$summaries
+
+Write the report.

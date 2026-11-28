@@ -3,8 +3,6 @@ import streamlit as st
 from api_client import client
 from session import auth_state
 
-st.set_page_config(page_title="Profile", page_icon="👤")
-
 # Nothing below this line runs for someone who is not logged in.
 auth_state.require_login()
 auth_state.show_logout_button()
@@ -107,4 +105,4 @@ if saved:
         st.success("Profile saved.")
     else:
         # First time: the profile is done, so go to the home page.
-        st.switch_page("app.py")
+        st.switch_page("views/home.py")

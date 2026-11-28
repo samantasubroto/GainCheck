@@ -26,6 +26,23 @@ def get_all_for_user(db, user_id, limit):
     )
 
 
+def get_notes_in_period(db, user_id, period_start, period_end):
+    """The notes this user wrote on their body entries in a period, as {"date": ..., "text": ...}."""
+    rows = (
+        db.query(BodyMetric.date, BodyMetric.notes)
+        .filter(
+            BodyMetric.user_id == user_id,
+            BodyMetric.date >= period_start,
+            BodyMetric.date <= period_end,
+            BodyMetric.notes.isnot(None),
+            BodyMetric.notes != "",
+        )
+        .order_by(BodyMetric.date)
+        .all()
+    )
+    return [{"date": row[0], "text": row[1]} for row in rows]
+
+
 def save(db, user_id, data):
     """Save one day's entry.
 

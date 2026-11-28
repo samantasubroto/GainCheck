@@ -1,6 +1,15 @@
 from fastapi import APIRouter
 
-from app.api.v1.routes import auth, body_metrics, exercises, health, profile, progress, workouts
+from app.api.v1.routes import (
+    auth,
+    body_metrics,
+    exercises,
+    health,
+    profile,
+    progress,
+    reports,
+    workouts,
+)
 
 # This router collects all the v1 routes in one place.
 # Each time we add a new routes file, we add one line here.
@@ -12,3 +21,4 @@ api_router.include_router(exercises.router)
 api_router.include_router(workouts.router)
 api_router.include_router(body_metrics.router)
 api_router.include_router(progress.router)
+api_router.include_router(reports.router)

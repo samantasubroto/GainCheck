@@ -5,8 +5,6 @@ import streamlit as st
 from api_client import client
 from session import auth_state
 
-st.set_page_config(page_title="Log Workout", page_icon="🏋️")
-
 # Nothing below this line runs for someone who is not logged in.
 auth_state.require_login()
 auth_state.show_logout_button()

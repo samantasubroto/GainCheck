@@ -13,8 +13,13 @@ def get_progress(db, user_id, days, today=None):
     """Progress facts for the last `days` days, ending today."""
     if today is None:
         today = datetime.date.today()
-    period_end = today
     period_start = today - datetime.timedelta(days=days - 1)
+    return get_progress_for_period(db, user_id, period_start, today)
+
+
+def get_progress_for_period(db, user_id, period_start, period_end):
+    """Progress facts for any period. The reports use this for a calendar month."""
+    days = (period_end - period_start).days + 1
 
     # Read everything we need from the database.
     all_sets = workout_repository.get_sets_for_user(db, user_id, MAIN_LIFTS)
